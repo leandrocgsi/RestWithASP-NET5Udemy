@@ -1,77 +1,95 @@
-﻿using RestWithASPNETUdemy.Model;
+﻿using Microsoft.EntityFrameworkCore.Internal;
+using RestWithASPNETUdemy.Model;
+using RestWithASPNETUdemy.Model.Context;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace RestWithASPNETUdemy.Services.Implementations
 {
     public class PersonServiceImplementation : IPersonService
     {
-        // Counter responsible for generating a fake ID
-        // since we are not accessing any database
-        private volatile int count;
 
-        // Method responsible for creating a new person.
-        // If we had a database this would be the time to persist the data
+        private MySQLContext _context;
+
+        public PersonServiceImplementation(MySQLContext context)
+        {
+            _context = context;
+        }
+        
+        // Method responsible for returning all people,
+        public List<Person> FindAll()
+        {
+            return _context.Persons.ToList();
+        }
+
+        // Method responsible for returning one person by ID
+        public Person FindByID(long id)
+        {
+            return _context.Persons.SingleOrDefault(p => p.Id.Equals(id));
+        }
+
+        // Method responsible to crete one new person
         public Person Create(Person person)
         {
+            try
+            {
+                _context.Add(person);
+                _context.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return person;
+        }
+
+        // Method responsible for updating one person
+        public Person Update(Person person)
+        {
+            // We check if the person exists in the database
+            // If it doesn't exist we return an empty person instance
+            if (!Exists(person.Id)) return new Person();
+
+            // Get the current status of the record in the database
+            var result = _context.Persons.SingleOrDefault(p => p.Id.Equals(person.Id));
+            if (result != null)
+            {
+                try
+                {
+                    // set changes and save
+                    _context.Entry(result).CurrentValues.SetValues(person);
+                    _context.SaveChanges();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
             return person;
         }
 
         // Method responsible for deleting a person from an ID
         public void Delete(long id)
         {
-            // Our exclusion logic would come here
-        }
-
-        // Method responsible for returning all people,
-        // again this information is mocks
-        public List<Person> FindAll()
-        {
-            List<Person> persons = new List<Person>();
-            for (int i = 0; i < 8; i++)
+            var result = _context.Persons.SingleOrDefault(p => p.Id.Equals(id));
+            if (result != null)
             {
-                Person person = MockPerson(i);
-                persons.Add(person);
+                try
+                {
+                    _context.Persons.Remove(result);
+                    _context.SaveChanges();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
             }
-            return persons;
         }
-
-        // Method responsible for returning a person
-        // as we have not accessed any database we are returning a mock
-        public Person FindByID(long id)
+        private bool Exists(long id)
         {
-            return new Person
-            {
-                Id = IncrementAndGet(),
-                FirstName = "Leandro",
-                LastName = "Costa",
-                Address = "Uberlandia - Minas Gerais - Brasil",
-                Gender = "Male"
-            };
-        }
-
-        // Method responsible for updating a person for
-        // being mock we return the same information passed
-        public Person Update(Person person)
-        {
-            return person;
-        }
-
-        private Person MockPerson(int i)
-        {
-            return new Person
-            {
-                Id = IncrementAndGet(),
-                FirstName = "Person Name" + i,
-                LastName = "Person LastName" + i,
-                Address = "Some Address" + i,
-                Gender = "Male"
-            };
-        }
-
-        private long IncrementAndGet()
-        {
-            return Interlocked.Increment(ref count);
+            return _context.Persons.Any(p => p.Id.Equals(id));
         }
     }
 }
