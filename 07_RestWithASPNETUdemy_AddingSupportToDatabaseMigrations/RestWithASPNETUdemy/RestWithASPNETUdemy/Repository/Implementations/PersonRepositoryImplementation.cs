@@ -49,7 +49,7 @@ namespace RestWithASPNETUdemy.Repository.Implementations
         {
             // We check if the person exists in the database
             // If it doesn't exist we return an empty person instance
-            if (!Exists(person.Id)) return new Person();
+            if (!Exists(person.Id)) return null;
 
             // Get the current status of the record in the database
             var result = _context.Persons.SingleOrDefault(p => p.Id.Equals(person.Id));
