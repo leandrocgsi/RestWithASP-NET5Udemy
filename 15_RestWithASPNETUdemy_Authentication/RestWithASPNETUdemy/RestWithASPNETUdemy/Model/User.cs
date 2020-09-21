@@ -24,6 +24,6 @@ namespace RestWithASPNETUdemy.Model
         public string RefreshToken { get; set; }
 
         [Column("refresh_token_expiry_time")]
-        public DateTime RefreshTokenExpiryTipe { get; set; }
+        public DateTime RefreshTokenExpiryTime { get; set; }
     }
 }
