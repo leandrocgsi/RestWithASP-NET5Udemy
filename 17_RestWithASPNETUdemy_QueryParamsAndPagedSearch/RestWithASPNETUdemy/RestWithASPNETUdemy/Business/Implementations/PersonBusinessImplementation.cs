@@ -31,6 +31,11 @@ namespace RestWithASPNETUdemy.Business.Implementations
             return _converter.Parse(_repository.FindByID(id));
         }
 
+        public List<PersonVO> FindByName(string firstName, string lastName)
+        {
+            return _converter.Parse(_repository.FindByName(firstName, lastName));
+        }
+
         // Method responsible to crete one new person
         public PersonVO Create(PersonVO person)
         {
@@ -59,7 +64,6 @@ namespace RestWithASPNETUdemy.Business.Implementations
         {
             _repository.Delete(id);
         }
-
 
     }
 }
