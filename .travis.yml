@@ -2,7 +2,7 @@ sudo: required
 dist: bionic
 language: csharp
 mono: none
-dotnet: 5.0
+dotnet: 5
 services: docker
 before_install:
   - cd 19_RestWithASPNETUdemy_AddingDockerSupport/
