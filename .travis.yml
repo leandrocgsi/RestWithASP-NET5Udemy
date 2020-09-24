@@ -5,7 +5,7 @@ mono: none
 dotnet: 3.1
 services: docker
 before_install:
-  - cd 19_RestWithASPNETUdemy_AddingDockerSupport/
+  - cd 19_RestWithASPNETUdemy_AddingDockerSupport/RestWithASPNETUdemy
   - echo "We are in the right folder!"
 script:
   - docker-compose build
