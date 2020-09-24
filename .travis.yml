@@ -1,0 +1,24 @@
+sudo: required
+dist: bionic
+language: csharp
+mono: none
+dotnet:5.0
+services: docker
+before_install:
+  - cd 19_RestWithASPNETUdemy_AddingDockerSupport/
+  - echo "We are in the right folder!"
+script:
+  - docker-compose build
+before_deploy:
+  - echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --pasword-stdin
+deploy:
+  provider: script
+  script:
+    docker tag rest-with-asp-net-udemy:latest $DOCKER_USERNAME/rest-with-asp-net-udemy:$TRAVIS_JOB_ID;
+    docker tag rest-with-asp-net-udemy-db:latest $DOCKER_USERNAME/rest-with-asp-net-udemy-db:$TRAVIS_JOB_ID;
+    docker push $DOCKER_USERNAME/rest-with-asp-net-udemy:$TRAVIS_JOB_ID;
+    docker push $DOCKER_USERNAME/rest-with-asp-net-udemy-db:$TRAVIS_JOB_ID;
+  on:
+    branch: master
+notifications:
+  email: false
