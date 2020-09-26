@@ -1,0 +1,39 @@
+name: Continuous Integration with Github Actions
+
+on: [push]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Docker Login - Azure Container Registry
+        uses: Azure/docker-login@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          login-server: ${{ secrets.DOCKER_CONTAINER_REGISTRY }}
+    
+      - name: Build Images
+        working-directory: ./20_RestWithASPNETUdemy_DeployToAzure/RestWithASPNETUdemy
+        run: docker-compose build
+      
+      - name: Push to Azure Container registry
+        run: |
+          docker tag ${{ secrets.IMAGE_NAME }}:latest ${{ secrets.DOCKER_CONTAINER_REGISTRY }}/${{ secrets.IMAGE_NAME }}:${{github.run_id}}
+          docker push ${{ secrets.DOCKER_CONTAINER_REGISTRY }}/${{ secrets.IMAGE_NAME }}:${{github.run_id}}
+      
+      - name: Login in Azure to Deployment
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: Azure WebApp Container - Application Deployment
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: erudio-api-server
+          images:  ${{ secrets.DOCKER_CONTAINER_REGISTRY }}/${{ secrets.IMAGE_NAME }}:${{github.run_id}}
