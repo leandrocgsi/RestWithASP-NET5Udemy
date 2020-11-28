@@ -1,10 +1,9 @@
-﻿using Tapioca.HATEOAS;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RestWithASPNETUdemy.Business;
 using RestWithASPNETUdemy.Data.VO;
-using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
+using RestWithASPNETUdemy.Hypermedia.Filters;
 
 namespace RestWithASPNETUdemy.Controllers
 {
@@ -34,10 +33,10 @@ namespace RestWithASPNETUdemy.Controllers
         // determina o objeto de retorno em caso de sucesso List<Book>
         // O [SwaggerResponse(XYZ)] define os códigos de retorno 204, 400 e 401
         [HttpGet]
-        [SwaggerResponse((200), Type = typeof(List<BookVO>))]
-        [SwaggerResponse(204)]
-        [SwaggerResponse(400)]
-        [SwaggerResponse(401)]
+        [ProducesResponseType((200), Type = typeof(List<BookVO>))]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         [Authorize("Bearer")]
         [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Get()
@@ -47,14 +46,14 @@ namespace RestWithASPNETUdemy.Controllers
 
         // Configura o Swagger para a operação
         // http://localhost:{porta}/api/books/v1/{id}
-        // [SwaggerResponse((202), Type = typeof(Book))]
+        // [ProducesResponseType((202), Type = typeof(Book))]
         // determina o objeto de retorno em caso de sucesso Book
-        // O [SwaggerResponse(XYZ)] define os códigos de retorno 204, 400 e 401
+        // O [ProducesResponseType(XYZ)] define os códigos de retorno 204, 400 e 401
         [HttpGet("{id}")]
-        [SwaggerResponse((200), Type = typeof(BookVO))]
-        [SwaggerResponse(204)]
-        [SwaggerResponse(400)]
-        [SwaggerResponse(401)]
+        [ProducesResponseType((200), Type = typeof(BookVO))]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         [Authorize("Bearer")]
         [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Get(long id)
@@ -66,13 +65,13 @@ namespace RestWithASPNETUdemy.Controllers
 
         // Configura o Swagger para a operação
         // http://localhost:{porta}/api/
-        // [SwaggerResponse((202), Type = typeof(Book))]
+        // [ProducesResponseType((202), Type = typeof(Book))]
         // determina o objeto de retorno em caso de sucesso Book
-        // O [SwaggerResponse(XYZ)] define os códigos de retorno 400 e 401
+        // O [ProducesResponseType(XYZ)] define os códigos de retorno 400 e 401
         [HttpPost]
-        [SwaggerResponse((201), Type = typeof(BookVO))]
-        [SwaggerResponse(400)]
-        [SwaggerResponse(401)]
+        [ProducesResponseType((201), Type = typeof(BookVO))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         [Authorize("Bearer")]
         [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Post([FromBody]BookVO book)
@@ -84,11 +83,11 @@ namespace RestWithASPNETUdemy.Controllers
         // Configura o Swagger para a operação
         // http://localhost:{porta}/api/books/v1/
         // determina o objeto de retorno em caso de sucesso Book
-        // O [SwaggerResponse(XYZ)] define os códigos de retorno 400 e 401
+        // O [ProducesResponseType(XYZ)] define os códigos de retorno 400 e 401
         [HttpPut]
-        [SwaggerResponse((202), Type = typeof(BookVO))]
-        [SwaggerResponse(400)]
-        [SwaggerResponse(401)]
+        [ProducesResponseType((202), Type = typeof(BookVO))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         [Authorize("Bearer")]
         [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Put([FromBody]BookVO book)
@@ -101,11 +100,11 @@ namespace RestWithASPNETUdemy.Controllers
 
         // Configura o Swagger para a operação
         // http://localhost:{porta}/api/books/v1/{id}
-        // O [SwaggerResponse(XYZ)] define os códigos de retorno 400 e 401
+        // O [ProducesResponseType(XYZ)] define os códigos de retorno 400 e 401
         [HttpDelete("{id}")]
-        [SwaggerResponse(204)]
-        [SwaggerResponse(400)]
-        [SwaggerResponse(401)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         [Authorize("Bearer")]
         [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Delete(int id)

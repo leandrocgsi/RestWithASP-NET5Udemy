@@ -1,6 +1,6 @@
 ﻿using RestWithASPNETUdemy.Data.VO;
+using RestWithASPNETUdemy.Hypermedia.Utils;
 using System.Collections.Generic;
-using Tapioca.HATEOAS.Utils;
 
 namespace RestWithASPNETUdemy.Business
 {
@@ -12,6 +12,6 @@ namespace RestWithASPNETUdemy.Business
         List<PersonVO> FindByName(string fristName, string lastName);
         PersonVO Update(PersonVO person);
         void Delete(long id);
-        PagedSearchDTO<PersonVO> FindWithPagedSearch(string name, string sortDirection, int pageSize, int page);
+        PagedSearchVO<PersonVO> FindWithPagedSearch(string name, string sortDirection, int pageSize, int page);
     }
 }

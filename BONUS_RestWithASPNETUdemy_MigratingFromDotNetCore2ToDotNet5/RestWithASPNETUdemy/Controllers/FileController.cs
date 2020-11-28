@@ -19,10 +19,10 @@ namespace RestWithASPNETUdemy.Controllers
         }
 
         [HttpGet]
-        [SwaggerResponse((200), Type = typeof(byte []))]
-        [SwaggerResponse(204)]
-        [SwaggerResponse(400)]
-        [SwaggerResponse(401)]
+        [ProducesResponseType((200), Type = typeof(byte []))]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         [Authorize("Bearer")]
         public IActionResult GetPDFFile()
         {

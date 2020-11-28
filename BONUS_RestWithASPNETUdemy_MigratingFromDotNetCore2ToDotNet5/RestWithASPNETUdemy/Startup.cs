@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
 
@@ -14,29 +13,29 @@ using RestWithASPNETUdemy.Model.Context;
 using RestWithASPNETUdemy.Business;
 using RestWithASPNETUdemy.Business.Implementattions;
 using RestWithASPNETUdemy.Repository.Generic;
-
-using RestWithASPNETUdemy.HyperMedia;
-using Swashbuckle.AspNetCore.Swagger;
-
-using Tapioca.HATEOAS;
 using RestWithASPNETUdemy.Security.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using RestWithASPNETUdemy.Hypermedia.Filters;
+using RestWithASPNETUdemy.Hypermedia.Enricher;
+using Serilog;
+using Microsoft.OpenApi.Models;
 
 namespace RestWithASPNETUdemy
 {
     public class Startup
     {
-        private readonly ILogger _logger;
         public IConfiguration _configuration { get; }
-        public IHostingEnvironment _environment { get; }
+        public IWebHostEnvironment _environment { get; }
 
-        public Startup(IConfiguration configuration, IHostingEnvironment environment, ILogger<Startup> logger)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             _configuration = configuration;
             _environment = environment;
-            _logger = logger;
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                .CreateLogger();
         }
 
 
@@ -48,7 +47,7 @@ namespace RestWithASPNETUdemy
             services.AddDbContext<MySQLContext>(options => options.UseMySql(connectionString));
 
             //Adding Migrations Support
-            ExecuteMigrations(connectionString);
+            MigrateDatabase(connectionString);
 
             var signingConfigurations = new SigningConfigurations();
             services.AddSingleton(signingConfigurations);
@@ -107,8 +106,8 @@ namespace RestWithASPNETUdemy
 
             //HATEOAS filter definitions
             var filterOptions = new HyperMediaFilterOptions();
-            filterOptions.ObjectContentResponseEnricherList.Add(new BookEnricher());
-            filterOptions.ObjectContentResponseEnricherList.Add(new PersonEnricher());
+            filterOptions.ContentResponseEnricherList.Add(new BookEnricher());
+            filterOptions.ContentResponseEnricherList.Add(new PersonEnricher());
 
             //Service inject
             services.AddSingleton(filterOptions);
@@ -120,9 +119,9 @@ namespace RestWithASPNETUdemy
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1",
-                    new Info
+                    new OpenApiInfo
                     {
-                        Title = "RESTful API With ASP.NET Core 2.0",
+                        Title = "RESTful API's with ASP.NET Core 5 and Docker",
                         Version = "v1"
                     });
 
@@ -140,37 +139,14 @@ namespace RestWithASPNETUdemy
             services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
         }
 
-        private void ExecuteMigrations(string connectionString)
-        {
-            if (_environment.IsDevelopment())
-            {
-                try
-                {
-                    var evolveConnection = new MySql.Data.MySqlClient.MySqlConnection(connectionString);
-
-                    var evolve = new Evolve.Evolve("evolve.json", evolveConnection, msg => _logger.LogInformation(msg))
-                    {
-                        Locations = new List<string> { "db/migrations" },
-                        IsEraseDisabled = true,
-                    };
-
-                    evolve.Migrate();
-
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogCritical("Database migration failed.", ex);
-                    throw;
-                }
-            }
-        }
-
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            loggerFactory.AddConsole(_configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            app.UseHttpsRedirection();
 
+            app.UseRouting();
+
+            app.UseCors();
             //Enable Swagger
             app.UseSwagger();
 
@@ -183,14 +159,34 @@ namespace RestWithASPNETUdemy
             option.AddRedirect("^$", "swagger");
             app.UseRewriter(option);
 
+            app.UseAuthorization();
             //Adding map routing
-            app.UseMvc(routes =>
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
-                    name: "DefaultApi",
-                    template: "{controller=Values}/{id?}");
+                endpoints.MapControllers();
+                endpoints.MapControllerRoute("DefaultApi", "{controller=Values}/{id?}");
             });
-
         }
+
+        private void MigrateDatabase(string connectionString)
+        {
+            try
+            {
+                var evolveConnection = new MySql.Data.MySqlClient.MySqlConnection(connectionString);
+
+                var evolve = new Evolve.Evolve(evolveConnection, msg => Log.Information(msg))
+                {
+                    Locations = new List<string> { "db/migrations", "db/dataset" },
+                    IsEraseDisabled = true,
+                };
+                evolve.Migrate();
+
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Database migration failed.", ex);
+                throw;
+            }
+        }  
     }
 }

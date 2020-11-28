@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using RestWithASPNETUdemy.Model;
 using RestWithASPNETUdemy.Repository.Generic;
 using RestWithASPNETUdemy.Data.Converters;
 using RestWithASPNETUdemy.Data.VO;
-using Tapioca.HATEOAS.Utils;
+using RestWithASPNETUdemy.Hypermedia.Utils;
 
 namespace RestWithASPNETUdemy.Business.Implementattions
 {
@@ -54,7 +53,7 @@ namespace RestWithASPNETUdemy.Business.Implementattions
             _repository.Delete(id);
         }
 
-        public PagedSearchDTO<PersonVO> FindWithPagedSearch(string name, string sortDirection, int pageSize, int page)
+        public PagedSearchVO<PersonVO> FindWithPagedSearch(string name, string sortDirection, int pageSize, int page)
         {
             page = page > 0 ? page - 1 : 0;
             string query = @"select * from Persons p where 1 = 1 ";
@@ -69,7 +68,7 @@ namespace RestWithASPNETUdemy.Business.Implementattions
 
             int totalResults = _repository.GetCount(countQuery);
 
-            return new PagedSearchDTO<PersonVO>
+            return new PagedSearchVO<PersonVO>
             {
                 CurrentPage = page + 1,
                 List = _converter.ParseList(persons),

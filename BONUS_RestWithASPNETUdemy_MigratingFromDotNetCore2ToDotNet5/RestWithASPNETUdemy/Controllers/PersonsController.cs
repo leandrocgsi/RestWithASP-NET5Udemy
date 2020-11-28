@@ -1,10 +1,9 @@
-﻿using Tapioca.HATEOAS;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RestWithASPNETUdemy.Business;
 using RestWithASPNETUdemy.Data.VO;
-using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
+using RestWithASPNETUdemy.Hypermedia.Filters;
 
 namespace RestWithASPNETUdemy.Controllers
 {
@@ -34,10 +33,10 @@ namespace RestWithASPNETUdemy.Controllers
         // determina o objeto de retorno em caso de sucesso List<Person>
         // O [SwaggerResponse(XYZ)] define os códigos de retorno 204, 400 e 401
         [HttpGet]
-        [SwaggerResponse((200), Type = typeof(List<PersonVO>))]
-        [SwaggerResponse(204)]
-        [SwaggerResponse(400)]
-        [SwaggerResponse(401)]
+        [ProducesResponseType((200), Type = typeof(List<PersonVO>))]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         [Authorize("Bearer")]
         [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Get()
@@ -51,10 +50,10 @@ namespace RestWithASPNETUdemy.Controllers
         // determina o objeto de retorno em caso de sucesso List<Person>
         // O [SwaggerResponse(XYZ)] define os códigos de retorno 204, 400 e 401
         [HttpGet("find-by-name")]
-        [SwaggerResponse((200), Type = typeof(List<PersonVO>))]
-        [SwaggerResponse(204)]
-        [SwaggerResponse(400)]
-        [SwaggerResponse(401)]
+        [ProducesResponseType((200), Type = typeof(List<PersonVO>))]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         [Authorize("Bearer")]
         [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult GetByName([FromQuery] string firstName, [FromQuery] string lastName)
@@ -68,10 +67,10 @@ namespace RestWithASPNETUdemy.Controllers
         // determina o objeto de retorno em caso de sucesso List<Person>
         // O [SwaggerResponse(XYZ)] define os códigos de retorno 204, 400 e 401
         [HttpGet("find-with-paged-search/{sortDirection}/{pageSize}/{page}")]
-        [SwaggerResponse((200), Type = typeof(List<PersonVO>))]
-        [SwaggerResponse(204)]
-        [SwaggerResponse(400)]
-        [SwaggerResponse(401)]
+        [ProducesResponseType((200), Type = typeof(List<PersonVO>))]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         [Authorize("Bearer")]
         [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult GetPagedSearch([FromQuery] string name, string sortDirection, int pageSize, int page)
@@ -85,10 +84,10 @@ namespace RestWithASPNETUdemy.Controllers
         // determina o objeto de retorno em caso de sucesso Person
         // O [SwaggerResponse(XYZ)] define os códigos de retorno 204, 400 e 401
         [HttpGet("{id}")]
-        [SwaggerResponse((200), Type = typeof(PersonVO))]
-        [SwaggerResponse(204)]
-        [SwaggerResponse(400)]
-        [SwaggerResponse(401)]
+        [ProducesResponseType((200), Type = typeof(PersonVO))]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         [Authorize("Bearer")]
         [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Get(long id)
@@ -104,9 +103,9 @@ namespace RestWithASPNETUdemy.Controllers
         // determina o objeto de retorno em caso de sucesso Person
         // O [SwaggerResponse(XYZ)] define os códigos de retorno 400 e 401
         [HttpPost]
-        [SwaggerResponse((201), Type = typeof(PersonVO))]
-        [SwaggerResponse(400)]
-        [SwaggerResponse(401)]
+        [ProducesResponseType((201), Type = typeof(PersonVO))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         [Authorize("Bearer")]
         [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Post([FromBody]PersonVO person)
@@ -120,9 +119,9 @@ namespace RestWithASPNETUdemy.Controllers
         // determina o objeto de retorno em caso de sucesso Person
         // O [SwaggerResponse(XYZ)] define os códigos de retorno 400 e 401
         [HttpPut]
-        [SwaggerResponse((202), Type = typeof(PersonVO))]
-        [SwaggerResponse(400)]
-        [SwaggerResponse(401)]
+        [ProducesResponseType((202), Type = typeof(PersonVO))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         [Authorize("Bearer")]
         [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Put([FromBody]PersonVO person)
@@ -139,9 +138,9 @@ namespace RestWithASPNETUdemy.Controllers
         // determina o objeto de retorno em caso de sucesso Person
         // O [SwaggerResponse(XYZ)] define os códigos de retorno 400 e 401
         [HttpPatch]
-        [SwaggerResponse((202), Type = typeof(PersonVO))]
-        [SwaggerResponse(400)]
-        [SwaggerResponse(401)]
+        [ProducesResponseType((202), Type = typeof(PersonVO))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         [Authorize("Bearer")]
         [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Patch([FromBody]PersonVO person)
@@ -156,9 +155,9 @@ namespace RestWithASPNETUdemy.Controllers
         // http://localhost:{porta}/api/persons/v1/{id}
         // O [SwaggerResponse(XYZ)] define os códigos de retorno 400 e 401
         [HttpDelete("{id}")]
-        [SwaggerResponse(204)]
-        [SwaggerResponse(400)]
-        [SwaggerResponse(401)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         [TypeFilter(typeof(HyperMediaFilter))]
         [Authorize("Bearer")]
         public IActionResult Delete(int id)
