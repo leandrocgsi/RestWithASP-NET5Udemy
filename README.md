@@ -4,6 +4,7 @@
 ![Continuous Integration with Github Actions](https://github.com/leandrocgsi/RestWithASP-NET5Udemy/workflows/Continuous%20Integration%20with%20Github%20Actions/badge.svg)
 ![Forks](https://img.shields.io/github/forks/leandrocgsi/RestWithASP-NET5Udemy)
 ![Stars](https://img.shields.io/github/stars/leandrocgsi/RestWithASP-NET5Udemy)
+![Last Commit](https://img.shields.io/github/last-commit/leandrocgsi/RestWithASP-NET5Udemy)
 
 
 [![Image](https://github.com/leandrocgsi/RestWithSpringBootUdemy/blob/master/Images/rest_apis_restful_do_0_a_nuvem_com_asp_net_core_e_docker.png?raw=true "REST API's RESTFul do 0 à Nuvem Com ASP.NET Core 2 e Docker")](https://www.udemy.com/restful-apis-do-0-a-nuvem-com-aspnet-core-e-docker/?couponCode=GTHB_FLASH_SALE2019)
