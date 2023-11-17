@@ -1,12 +1,12 @@
-﻿using RestWithASPNETUdemy.Data.VO;
-using RestWithASPNETUdemy.Model;
-using RestWithASPNETUdemy.Model.Context;
+﻿using RestWithASPNETErudio.Data.VO;
+using RestWithASPNETErudio.Model;
+using RestWithASPNETErudio.Model.Context;
 using System;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace RestWithASPNETUdemy.Repository
+namespace RestWithASPNETErudio.Repository
 {
     public class UserRepository : IUserRepository
     {
