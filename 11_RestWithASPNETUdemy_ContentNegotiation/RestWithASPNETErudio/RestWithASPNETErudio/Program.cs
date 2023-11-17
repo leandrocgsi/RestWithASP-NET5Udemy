@@ -33,7 +33,7 @@ builder.Services.AddMvc(options =>
     options.FormatterMappings.SetMediaTypeMappingForFormat("xml", MediaTypeHeaderValue.Parse("application/xml"));
     options.FormatterMappings.SetMediaTypeMappingForFormat("json", MediaTypeHeaderValue.Parse("application/json"));
 })
-    .AddXmlSerializerFormatters();
+.AddXmlSerializerFormatters();
 
 builder.Services.AddApiVersioning();
 
