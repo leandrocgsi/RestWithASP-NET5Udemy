@@ -1,15 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RestWithASPNETErudio.Data.VO;
-using RestWithASPNETErudio.Hypermedia.Constants;
+using RestWithASPNETUdemy.Data.VO;
+using RestWithASPNETUdemy.Hypermedia.Constants;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace RestWithASPNETErudio.Hypermedia.Enricher
+namespace RestWithASPNETUdemy.Hypermedia.Enricher
 {
     public class PersonEnricher : ContentResponseEnricher<PersonVO>
     {
+        private readonly object _lock = new object();
         protected override Task EnrichModel(PersonVO content, IUrlHelper urlHelper)
         {
-            var path = "api/person";
+            var path = "api/person/v1";
             string link = GetLink(content.Id, urlHelper, path);
 
             content.Links.Add(new HyperMediaLink()
@@ -40,14 +45,14 @@ namespace RestWithASPNETErudio.Hypermedia.Enricher
                 Rel = RelationType.self,
                 Type = "int"
             });
-            return Task.CompletedTask;
+            return null;
         }
 
         private string GetLink(long id, IUrlHelper urlHelper, string path)
         {
-            lock (this)
+            lock (_lock)
             {
-                var url = new { controller = path, id };
+                var url = new { controller = path, id = id };
                 return new StringBuilder(urlHelper.Link("DefaultApi", url)).Replace("%2F", "/").ToString();
             };
         }
