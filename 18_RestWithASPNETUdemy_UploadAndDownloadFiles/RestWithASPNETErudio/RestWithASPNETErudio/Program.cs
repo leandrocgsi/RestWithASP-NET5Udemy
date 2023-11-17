@@ -21,6 +21,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using RestWithASPNETErudio.Configurations;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 var appName = "REST API's RESTful from 0 to Azure with ASP.NET Core 8 and Docker";
