@@ -1,5 +1,4 @@
 ﻿using RestWithASPNETErudio.Model.Base;
-using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RestWithASPNETErudio.Model

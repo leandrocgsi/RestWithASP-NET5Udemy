@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RestWithASPNETErudio.Model.Base;
 using RestWithASPNETErudio.Model.Context;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace RestWithASPNETErudio.Repository.Generic
 {

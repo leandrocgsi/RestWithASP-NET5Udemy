@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using RestWithASPNETErudio.Model;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Mvc;
 using RestWithASPNETErudio.Business;
-using Asp.Versioning;
+using RestWithASPNETErudio.Data.VO;
 
 namespace RestWithASPNETErudio.Controllers
 {
@@ -47,7 +47,7 @@ namespace RestWithASPNETErudio.Controllers
         // Maps POST requests to https://localhost:{port}/api/book/
         // [FromBody] consumes the JSON object sent in the request body
         [HttpPost]
-        public IActionResult Post([FromBody] Book book)
+        public IActionResult Post([FromBody] BookVO book)
         {
             if (book == null) return BadRequest();
             return Ok(_bookBusiness.Create(book));
@@ -56,7 +56,7 @@ namespace RestWithASPNETErudio.Controllers
         // Maps PUT requests to https://localhost:{port}/api/book/
         // [FromBody] consumes the JSON object sent in the request body
         [HttpPut]
-        public IActionResult Put([FromBody] Book book)
+        public IActionResult Put([FromBody] BookVO book)
         {
             if (book == null) return BadRequest();
             return Ok(_bookBusiness.Update(book));

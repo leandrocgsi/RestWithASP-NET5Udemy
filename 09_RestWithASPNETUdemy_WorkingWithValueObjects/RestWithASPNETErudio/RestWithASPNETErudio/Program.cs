@@ -2,11 +2,11 @@ using RestWithASPNETErudio.Model.Context;
 using Microsoft.EntityFrameworkCore;
 using RestWithASPNETErudio.Business.Implementations;
 using RestWithASPNETErudio.Business;
-using RestWithASPNETErudio.Repository;
-using EvolveDb;
-using Serilog;
 using MySqlConnector;
+using Serilog;
+using EvolveDb;
 using RestWithASPNETErudio.Repository.Generic;
+using RestWithASPNETErudio.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 

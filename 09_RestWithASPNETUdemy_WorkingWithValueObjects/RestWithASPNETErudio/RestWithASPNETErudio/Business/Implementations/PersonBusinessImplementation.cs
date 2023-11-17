@@ -1,10 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Internal;
+﻿using RestWithASPNETErudio.Data.Converter.Implementations;
+using RestWithASPNETErudio.Data.VO;
 using RestWithASPNETErudio.Model;
-using RestWithASPNETErudio.Model.Context;
 using RestWithASPNETErudio.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace RestWithASPNETErudio.Business.Implementations
 {
@@ -13,33 +10,40 @@ namespace RestWithASPNETErudio.Business.Implementations
 
         private readonly IRepository<Person> _repository;
 
+        private readonly PersonConverter _converter;
+
         public PersonBusinessImplementation(IRepository<Person> repository)
         {
             _repository = repository;
+            _converter = new PersonConverter();
         }
 
         // Method responsible for returning all people,
-        public List<Person> FindAll()
+        public List<PersonVO> FindAll()
         {
-            return _repository.FindAll();
+            return _converter.Parse(_repository.FindAll());
         }
 
         // Method responsible for returning one person by ID
-        public Person FindByID(long id)
+        public PersonVO FindByID(long id)
         {
-            return _repository.FindByID(id);
+            return _converter.Parse(_repository.FindByID(id));
         }
 
         // Method responsible to crete one new person
-        public Person Create(Person person)
+        public PersonVO Create(PersonVO person)
         {
-            return _repository.Create(person);
+            var personEntity = _converter.Parse(person);
+            personEntity = _repository.Create(personEntity);
+            return _converter.Parse(personEntity);
         }
 
         // Method responsible for updating one person
-        public Person Update(Person person)
+        public PersonVO Update(PersonVO person)
         {
-            return _repository.Update(person);
+            var personEntity = _converter.Parse(person);
+            personEntity = _repository.Update(personEntity);
+            return _converter.Parse(personEntity);
         }
 
         // Method responsible for deleting a person from an ID
