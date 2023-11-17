@@ -5,18 +5,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RestWithASPNETErudio.Services.Implementations
+namespace RestWithASPNETErudio.Repository.Implementations
 {
-    public class PersonServiceImplementation : IPersonService
+    public class PersonRepositoryImplementation : IPersonRepository
     {
 
         private MySQLContext _context;
 
-        public PersonServiceImplementation(MySQLContext context)
+        public PersonRepositoryImplementation(MySQLContext context)
         {
             _context = context;
         }
-
+        
         // Method responsible for returning all people,
         public List<Person> FindAll()
         {
@@ -25,7 +25,7 @@ namespace RestWithASPNETErudio.Services.Implementations
 
         // Method responsible for returning one person by ID
         public Person FindByID(long id)
-            {
+        {
             return _context.Persons.SingleOrDefault(p => p.Id.Equals(id));
         }
 
@@ -33,7 +33,7 @@ namespace RestWithASPNETErudio.Services.Implementations
         public Person Create(Person person)
         {
             try
-        {
+            {
                 _context.Add(person);
                 _context.SaveChanges();
             }
@@ -74,19 +74,19 @@ namespace RestWithASPNETErudio.Services.Implementations
         {
             var result = _context.Persons.SingleOrDefault(p => p.Id.Equals(id));
             if (result != null)
-        {
+            {
                 try
                 {
                     _context.Persons.Remove(result);
                     _context.SaveChanges();
                 }
                 catch (Exception)
-            {
+                {
                     throw;
-        }
+                }
             }
         }
-        private bool Exists(long id)
+        public bool Exists(long id)
         {
             return _context.Persons.Any(p => p.Id.Equals(id));
         }

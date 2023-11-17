@@ -1,7 +1,9 @@
-using RestWithASPNETErudio.Services.Implementations;
-using RestWithASPNETErudio.Services;
 using RestWithASPNETErudio.Model.Context;
 using Microsoft.EntityFrameworkCore;
+using RestWithASPNETErudio.Business.Implementations;
+using RestWithASPNETErudio.Business;
+using RestWithASPNETErudio.Repository.Implementations;
+using RestWithASPNETErudio.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +21,8 @@ builder.Services.AddDbContext<MySQLContext>(options => options.UseMySql(
 builder.Services.AddApiVersioning();
 
 //Dependency Injection
-builder.Services.AddScoped<IPersonService, PersonServiceImplementation>();
+builder.Services.AddScoped<IPersonBusiness, PersonBusinessImplementation>();
+builder.Services.AddScoped<IPersonRepository, PersonRepositoryImplementation>();
 
 var app = builder.Build();
 
