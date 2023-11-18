@@ -5,6 +5,7 @@ using RestWithASPNETUdemy.Business;
 using RestWithASPNETUdemy.Data.VO;
 using RestWithASPNETUdemy.Hypermedia.Filters;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace RestWithASPNETUdemy.Controllers
 {
@@ -13,6 +14,7 @@ namespace RestWithASPNETUdemy.Controllers
     [ApiController]
     [Authorize("Bearer")]
     [Route("api/[controller]/v{version:apiVersion}")]
+
     public class PersonController : ControllerBase
     {
 
