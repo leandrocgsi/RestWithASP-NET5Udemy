@@ -2,17 +2,48 @@ using RestWithASPNETErudio.Model.Context;
 using Microsoft.EntityFrameworkCore;
 using RestWithASPNETErudio.Business.Implementations;
 using RestWithASPNETErudio.Business;
-using RestWithASPNETErudio.Repository.Implementations;
-using RestWithASPNETErudio.Repository;
-using EvolveDb;
-using Serilog;
 using MySqlConnector;
+using Serilog;
+using EvolveDb;
+using RestWithASPNETErudio.Repository.Generic;
+using RestWithASPNETErudio.Repository;
+using Microsoft.Net.Http.Headers;
+using RestWithASPNETErudio.Hypermedia.Enricher;
+using RestWithASPNETErudio.Hypermedia.Filters;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Rewrite;
 
 var builder = WebApplication.CreateBuilder(args);
+var appName = "REST API's RESTful from 0 to Azure with ASP.NET Core 8 and Docker";
+var appVersion = "v1";
+var appDescription = $"REST API RESTful developed in course '{appName}'";
 
-// Add services to the container.
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
+builder.Services.AddCors(options => options.AddDefaultPolicy(builder =>
+{
+    builder.AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader();
+}));
 
 builder.Services.AddControllers();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c => {
+    c.SwaggerDoc(appVersion,
+        new OpenApiInfo
+        {
+            Title = appName,
+            Version = appVersion,
+            Description = appDescription,
+            Contact = new OpenApiContact
+            {
+                Name = "Leandro Costa",
+                Url = new Uri("https://pub.erudio.com.br/meus-cursos")
+            }
+        });
+});
 
 var connection = builder.Configuration["MySQLConnection:MySQLConnectionString"];
 builder.Services.AddDbContext<MySQLContext>(options => options.UseMySql(
@@ -25,12 +56,28 @@ if (builder.Environment.IsDevelopment())
     MigrateDatabase(connection);
 }
 
-//Versioning API
+builder.Services.AddMvc(options =>
+{
+    options.RespectBrowserAcceptHeader = true;
+
+    options.FormatterMappings.SetMediaTypeMappingForFormat("xml", MediaTypeHeaderValue.Parse("application/xml"));
+    options.FormatterMappings.SetMediaTypeMappingForFormat("json", MediaTypeHeaderValue.Parse("application/json"));
+})
+.AddXmlSerializerFormatters();
+
+var filterOptions = new HyperMediaFilterOptions();
+filterOptions.ContentResponseEnricherList.Add(new PersonEnricher());
+filterOptions.ContentResponseEnricherList.Add(new BookEnricher());
+
+builder.Services.AddSingleton(filterOptions);
+
 builder.Services.AddApiVersioning();
 
 //Dependency Injection
 builder.Services.AddScoped<IPersonBusiness, PersonBusinessImplementation>();
-builder.Services.AddScoped<IPersonRepository, PersonRepositoryImplementation>();
+builder.Services.AddScoped<IBookBusiness, BookBusinessImplementation>();
+
+builder.Services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
 
 var app = builder.Build();
 
@@ -38,13 +85,25 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
+app.UseCors();
+
+app.UseSwagger();
+
+app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", $"{appName} - {appVersion}");});
+
+var option = new RewriteOptions();
+option.AddRedirect("^$", "swagger");
+app.UseRewriter(option);
+
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapControllerRoute("DefaultApi", "{controller=values}/v{version=apiVersion}/{id?}");
 
 app.Run();
 
-void MigrateDatabase(string connection)
+
+void MigrateDatabase(string? connection)
 {
     try
     {

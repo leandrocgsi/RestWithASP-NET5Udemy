@@ -11,6 +11,7 @@
 	<ItemGroup>
 		<PackageReference Include="Evolve" Version="3.2.0" />
 		<PackageReference Include="Asp.Versioning.Mvc" Version="7.1.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
 		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
 		<PackageReference Include="Serilog" Version="3.1.1" />
 		<PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
