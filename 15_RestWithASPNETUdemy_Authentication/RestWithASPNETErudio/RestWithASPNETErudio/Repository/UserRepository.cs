@@ -69,7 +69,7 @@ namespace RestWithASPNETErudio.Repository
             {
                 builder.Append(item.ToString("x2"));
             }
-            return BitConverter.ToString(hashedBytes);
+            return builder.ToString();
         }
 
     }
