@@ -26,8 +26,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Rewrite;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
+var appName = "REST API's RESTful from 0 to Azure with ASP.NET 8 and Docker";
+var appDescription = $"REST API RESTful developed in course '{appName}'";
+var appVersion = "v1";
 
 var tokenConfigurations = new TokenConfiguration();
 
@@ -71,7 +77,24 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(builder =>
     .AllowAnyHeader();
 }));
 
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddControllers();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c => {
+    c.SwaggerDoc(appVersion,
+        new OpenApiInfo
+        {
+            Title = appName,
+            Version = appVersion,
+            Description = appDescription,
+            Contact = new OpenApiContact
+            {
+                Name = "Leandro Costa",
+                Url = new Uri("https://pub.erudio.com.br/meus-cursos")
+            }
+        });
+});
 
 var connection = builder.Configuration["MySQLConnection:MySQLConnectionString"];
 builder.Services.AddDbContext<MySQLContext>(options => options.UseMySql(
@@ -123,9 +146,22 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
+app.UseCors();
+
+app.UseSwagger();
+
+app.UseSwaggerUI(c => {
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", $"{appName} - {appVersion}");
+});
+
+var option = new RewriteOptions();
+option.AddRedirect("^$", "swagger");
+app.UseRewriter(option);
+
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapControllerRoute("DefaultApi", "{controller=values}/v{version=apiVersion}/{id?}");
 
 app.Run();
 
