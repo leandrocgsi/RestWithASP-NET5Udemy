@@ -19,7 +19,7 @@ jobs:
           login-server: ${{ secrets.DOCKER_CONTAINER_REGISTRY }}
     
       - name: Build Images
-        working-directory: ./20_RestWithASPNETUdemy_DeployToAzure/RestWithASPNETUdemy
+        working-directory: ./20_RestWithASPNETErudio_DeployToAzure/RestWithASPNETErudio
         run: docker-compose build
       
       - name: Push to Azure Container registry
